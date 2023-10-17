@@ -6,6 +6,9 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    minWidth: {
+      '1/3': '66%',
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
