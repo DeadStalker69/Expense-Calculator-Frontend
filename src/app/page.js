@@ -1,9 +1,10 @@
 "use client"
 import { Black_And_White_Picture } from 'next/font/google'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Table from './Table'
 import History from './History'
 import Form from './Form'
+import Navbar from './Navbar'
 
 
 const page = () => {
@@ -20,6 +21,33 @@ const page = () => {
   const [total, settotal] = useState("0")
 
   const [mainTask, setMainTask] = useState([])
+
+  const [userData, setUserData] = useState({
+    mainTask: [],
+    amount: [],
+    desc: [],
+    modes: [],
+    mode: [],
+    debit: [],
+    credit: [],
+    loan: [],
+    total: [],
+  });
+
+  // Load userData from localStorage when the component mounts
+  useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem('userData'));
+    if (storedUserData) {
+      setUserData(storedUserData);
+    }
+  }, []);
+
+  // Save userData to localStorage whenever it updates
+  useEffect(() => {
+    localStorage.setItem('userData', JSON.stringify(userData));
+  }, [userData]);
+
+
 
   const submitHandler = (e)=>{
     e.preventDefault()
@@ -99,7 +127,7 @@ const page = () => {
 
   return (
     <>
-    <h1 className='bg-black text-white p-3 text-3xl font-bold text-center'>My Expense Tracker</h1>
+    <Navbar userData={userData}/>
     <Form amount={amount} desc={desc} mode={mode} modes={modes} submitHandler={submitHandler} setamount={setamount} setdesc={setdesc} setMode={setMode} />
     <hr/> <br/>
     <Table credit={credit} debit={debit} loan={loan} total={total} totalColor={totalColor} />
