@@ -1,8 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import Navbar from '../Navbar'
+import moment from 'moment'
 
-const ConversionCalcPage = () => {
+const ConversionCalcPage = (page) => {
   const currencies = ['USD (\u0024)', 'AUD (\u0024)', 'EURO (\u20AC)', 'CAD (\u0024)'];
   const [foreignCurrency, setforeignCurrency] = useState("")
   const [amount, setAmount] = useState("")
@@ -13,14 +14,8 @@ const ConversionCalcPage = () => {
 function ConvertedValueBloack({ amount, value, onChange }) {
 
   useEffect(() => {
-    // Update the convertedValue whenever amount or value changes
-    setconvertedValue(amount * value);
+    setconvertedValue(amount * 1/value);
   }, [amount, value]);
-
-  // Save the value to another state when it changes
-  useEffect(() => {
-    // You can save the value to another state here, e.g., setValueInAnotherState(convertedValue);
-  }, [convertedValue]);
 
   return (
     <div className='flex justify-center'>
@@ -29,17 +24,43 @@ function ConvertedValueBloack({ amount, value, onChange }) {
     </div>
   );
 }
+  const submitCredit = (convertedValue)=> {
+    const amount = convertedValue
+    const desc = "Got foreign currency"
+    const mode = "online"
+    const CurrentDate = moment().format('MMMM Do YYYY')
+    
+    let updatedMainTask
+    let MainTaskYet = localStorage.getItem('History')
+    if(MainTaskYet)
+    {
+      updatedMainTask = JSON.parse(MainTaskYet)
+      updatedMainTask = [MainTaskYet, {amount, desc, mode, CurrentDate}]
+    }
+    else {
+      updatedMainTask = [{amount, desc, mode, CurrentDate}]
+    }
+    localStorage.setItem('History', JSON.stringify(updatedMainTask))
 
-const ConversionSubmitHandler = (e)=> {
-  e.preventDefault()
-}
+    let Credityet = localStorage.getItem('Total Credit')
+    Credityet = JSON.parse(Credityet)
+    Credityet += convertedValue
+    localStorage.setItem('Total Credit', JSON.stringify(Credityet))
 
+    let Amountyet = localStorage.getItem('Total Amount')
+    Amountyet = JSON.parse(Amountyet)
+    Amountyet += convertedValue
+    localStorage.setItem('Total Amount', JSON.stringify(Amountyet))
+  } 
   return (
     <>
     <Navbar />
-    <form onSubmit={ConversionSubmitHandler}>
-      <div className='flex justify-center'>
-      <h3 className='text-2xl m-5 px-4 py-2 font-bold'> Select the the foreign currecy:</h3>
+      <table>
+        <thead></thead>
+        <tbody>
+      <tr className='flex justify-center'>
+        <td className='text-2xl m-5 px-4 py-2 font-bold'>Select the the foreign currecy:</td>
+        <td>
     <select className="text-2xl border-zinc-800 border-2 m-5 px-4 py-2" value={foreignCurrency} onChange={(e) => setforeignCurrency(e.target.value)}>
       {currencies.map((option) => (
         <option key={option} value={option}>
@@ -47,26 +68,32 @@ const ConversionSubmitHandler = (e)=> {
       </option>
       ))}
       </select>
-      </ div>
-
-      <div className='flex justify-center'>
-      <h3 className='text-2xl m-5 px-4 py-2 font-bold'> Enter the amount:</h3>
+      </td>
+      </tr>
+        
+      <tr className='flex justify-center'>
+      <td className='text-2xl m-5 px-4 py-2 font-bold text-right'> Enter the amount:</td>
+      <td>
       <input type='number' min={0} step={0.01} className='text-2xl border-zinc-800 border-2 m-5 px-4 py-2' value={amount} onChange={(e) =>{setAmount(e.target.value)}}/>
-      </div>
+      </td>
+      </tr>
 
-      <div className='flex justify-center'>
-      <h3 className='text-2xl m-5 px-4 py-2 font-bold'> Enter the foreign amount you will get in exchange of 1 INR:</h3>
+      <tr className='flex justify-center'>
+      <td className='text-2xl m-5 px-4 py-2 font-bold text-right'> Enter the foreign amount you will get in exchange of 1 INR:</td>
+      <td>
       <input type='number' min={0} step={0.01} className='text-2xl border-zinc-800 border-2 m-5 px-4 py-2' value={value} onChange={(e) =>{setValue(e.target.value)}}/>
-      </div>
+      </td>
+      </tr>
+      </tbody>
+      </table>
        <br />
        <ConvertedValueBloack amount={amount} value={value} />
         <br />
         <br />
        <div className='flex justify-center'>
-      <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5'>Add To Credit</button>
+      <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=> {submitCredit(convertedValue)}}>Add To Credit</button>
+      <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=> {submitDebit}}>Add To Debit</button>
       </div>
-
-    </form>
     </>
   )
 }

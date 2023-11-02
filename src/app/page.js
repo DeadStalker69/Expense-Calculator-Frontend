@@ -11,8 +11,6 @@ import moment from 'moment'
 
 const getHistory = ()=> {
   let list = localStorage.getItem('History')
-  console.log(list)
-
   if(list)
   {
     return JSON.parse(localStorage.getItem('History'))
@@ -21,6 +19,51 @@ const getHistory = ()=> {
     return [];
   }
 }
+
+const getCredit = ()=> {
+  let list = localStorage.getItem('Total Credit')
+  if(list)
+  {
+    return JSON.parse(localStorage.getItem('Total Credit'))
+  }
+  else{
+    return 0;
+  }
+}
+
+const getDebit = ()=> {
+  let list = localStorage.getItem('Total Debit')
+  if(list)
+  {
+    return JSON.parse(localStorage.getItem('Total Debit'))
+  }
+  else{
+    return 0;
+  }
+}
+
+const getLoan = ()=> {
+  let list = localStorage.getItem('Total Loan')
+  if(list)
+  {
+    return JSON.parse(localStorage.getItem('Total Loan'))
+  }
+  else{
+    return 0;
+  }
+}
+
+const getAmount = ()=> {
+  let list = localStorage.getItem('Total Amount')
+  if(list)
+  {
+    return JSON.parse(localStorage.getItem('Total Amount'))
+  }
+  else{
+    return 0;
+  }
+}
+
 const page = () => {
   
   const [amount, setamount] = useState("")
@@ -29,10 +72,10 @@ const page = () => {
   const modes = ['cash', 'online', 'loan'];
   const [mode, setMode] = useState("cash")
 
-  const [credit, setcredit] = useState("0")
-  const [debit, setDebit] = useState("0")
-  const [loan, setLoan] = useState("0")
-  const [total, settotal] = useState("0")
+  const [credit, setcredit] = useState(getCredit())
+  const [debit, setDebit] = useState(getDebit())
+  const [loan, setLoan] = useState(getLoan())
+  const [total, settotal] = useState(getAmount())
 
   const [mainTask, setMainTask] = useState(getHistory())
 
@@ -132,6 +175,25 @@ const page = () => {
   }, [mainTask]
   )
 
+  useEffect(()=> {
+    localStorage.setItem('Total Credit', JSON.stringify(credit))
+  }, [credit]
+  )
+
+  useEffect(()=> {
+    localStorage.setItem('Total Debit', JSON.stringify(debit))
+  }, [debit]
+  )
+
+  useEffect(()=> {
+    localStorage.setItem('Total Loan', JSON.stringify(loan))
+  }, [loan]
+  )
+
+  useEffect(()=> {
+    localStorage.setItem('Total Amount', JSON.stringify(total))
+  }, [total]
+  )
   return (
     <>
     <Navbar/>
