@@ -35,7 +35,7 @@ function ConvertedValueBloack({ amount, value, onChange }) {
     if(MainTaskYet)
     {
       updatedMainTask = JSON.parse(MainTaskYet)
-      updatedMainTask = [MainTaskYet, {amount, desc, mode, CurrentDate}]
+      updatedMainTask = [... updatedMainTask, {amount, desc, mode, CurrentDate}]
     }
     else {
       updatedMainTask = [{amount, desc, mode, CurrentDate}]
@@ -50,6 +50,36 @@ function ConvertedValueBloack({ amount, value, onChange }) {
     let Amountyet = localStorage.getItem('Total Amount')
     Amountyet = JSON.parse(Amountyet)
     Amountyet += convertedValue
+    localStorage.setItem('Total Amount', JSON.stringify(Amountyet))
+  } 
+
+
+  const submitDebit = (convertedValue)=> {
+    const amount = convertedValue
+    const desc = "Paid in foreign currency"
+    const mode = "online"
+    const CurrentDate = moment().format('MMMM Do YYYY')
+    
+    let updatedMainTask
+    let MainTaskYet = localStorage.getItem('History')
+    if(MainTaskYet)
+    {
+      updatedMainTask = JSON.parse(MainTaskYet)
+      updatedMainTask = [... updatedMainTask, {amount, desc, mode, CurrentDate}]
+    }
+    else {
+      updatedMainTask = [{amount, desc, mode, CurrentDate}]
+    }
+    localStorage.setItem('History', JSON.stringify(updatedMainTask))
+
+    let Debityet = localStorage.getItem('Total Debit')
+    Debityet = JSON.parse(Debityet)
+    Debityet -= convertedValue
+    localStorage.setItem('Total Debit', JSON.stringify(Debityet))
+
+    let Amountyet = localStorage.getItem('Total Amount')
+    Amountyet = JSON.parse(Amountyet)
+    Amountyet -= convertedValue
     localStorage.setItem('Total Amount', JSON.stringify(Amountyet))
   } 
   return (
@@ -92,7 +122,7 @@ function ConvertedValueBloack({ amount, value, onChange }) {
         <br />
        <div className='flex justify-center'>
       <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=> {submitCredit(convertedValue)}}>Add To Credit</button>
-      <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=> {submitDebit}}>Add To Debit</button>
+      <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=> {submitDebit(convertedValue)}}>Add To Debit</button>
       </div>
     </>
   )
