@@ -5,8 +5,22 @@ import Table from './Table'
 import History from './History'
 import Form from './Form'
 import Navbar from './Navbar'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment'
 
+const getHistory = ()=> {
+  let list = localStorage.getItem('History')
+  console.log(list)
 
+  if(list)
+  {
+    return JSON.parse(localStorage.getItem('History'))
+  }
+  else{
+    return [];
+  }
+}
 const page = () => {
   
   const [amount, setamount] = useState("")
@@ -20,34 +34,7 @@ const page = () => {
   const [loan, setLoan] = useState("0")
   const [total, settotal] = useState("0")
 
-  const [mainTask, setMainTask] = useState([])
-
-  const [userData, setUserData] = useState({
-    mainTask: [],
-    amount: [],
-    desc: [],
-    modes: [],
-    mode: [],
-    debit: [],
-    credit: [],
-    loan: [],
-    total: [],
-  });
-
-  // Load userData from localStorage when the component mounts
-  useEffect(() => {
-    const storedUserData = JSON.parse(localStorage.getItem('userData'));
-    if (storedUserData) {
-      setUserData(storedUserData);
-    }
-  }, []);
-
-  // Save userData to localStorage whenever it updates
-  useEffect(() => {
-    localStorage.setItem('userData', JSON.stringify(userData));
-  }, [userData]);
-
-
+  const [mainTask, setMainTask] = useState(getHistory())
 
   const submitHandler = (e)=>{
     e.preventDefault()
@@ -55,7 +42,8 @@ const page = () => {
     const currentDebit = parseFloat(debit);
     const currentLoan = parseFloat(loan)
     const currentTotal = parseFloat(total)
-    const newAmount = parseFloat(amount);
+    const newAmount = parseFloat(amount); 
+    const CurrentDate = moment().format('MMMM Do YYYY')
 
     const updatedTotal = currentTotal + newAmount
 
@@ -74,11 +62,25 @@ const page = () => {
     }
     if(newAmount<0)
     {
+      if((newAmount + currentTotal) < 0)
+      {
+        toast.error("Debit amount cannot be more than total holdings.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "dark",
+          });
+          return;
+      }
       const updatedDebit = currentDebit + newAmount
       setDebit(updatedDebit)
       settotal(updatedTotal)
     }
-    setMainTask([... mainTask, {amount, desc, mode}])
+    setMainTask([... mainTask, {amount, desc, mode, CurrentDate}])
     console.log(mainTask)
     setamount("")
     setdesc("")
@@ -114,20 +116,25 @@ const page = () => {
     {
       listColor = " linear-gradient(to right, rgba(0,0,255,0), rgba(0,0,255,0.7))"
     }
-    
       return(
-        <li key={i} className='border-sky-300 border-b-2 flex items-center justify-between mb-4' style={{backgroundImage: listColor}}>
-        <h5 className='text-center text-xl font-semibold pl-10'>{t.amount}</h5>
-        <h6 className='text-center text-xl font-semibold ml-10'>{t.desc}</h6>
-        <h6 className='text-center text-xl font-semibold pr-10'>{t.mode}</h6>
+        <li key={i} className='border-sky-300 border-b-2 flex justify-between mb-4' style={{backgroundImage: listColor}}>
+        <h5 className='text-xl font-semibold pl-10 min-w-[25%]'>{'\u20B9'}{t.amount}</h5>
+        <h6 className='text-center truncate text-xl font-semibold min-w-[25%] max-w-[25%]'>{t.desc}</h6>
+        <h6 className='text-center text-xl font-semibold min-w-[25%]'>{t.mode}</h6>
+        <h6 className='text-right text-xl font-semibold pr-5 min-w-[25%]'>{t.CurrentDate}</h6>
       </li>
       )
     })
   }
 
+  useEffect(()=> {
+    localStorage.setItem('History', JSON.stringify(mainTask))
+  }, [mainTask]
+  )
+
   return (
     <>
-    <Navbar userData={userData}/>
+    <Navbar/>
     <Form amount={amount} desc={desc} mode={mode} modes={modes} submitHandler={submitHandler} setamount={setamount} setdesc={setdesc} setMode={setMode} />
     <hr/> <br/>
     <Table credit={credit} debit={debit} loan={loan} total={total} totalColor={totalColor} />
@@ -136,6 +143,7 @@ const page = () => {
     </div> <br/>
     <History renderTask={renderTask} />
     <hr />
+    <ToastContainer />
    </>
   )
 }

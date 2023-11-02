@@ -10,9 +10,8 @@ const Navbar = (userData ) => {
     <Link className='text-white p-3 text-3xl font-bold text-center pr-7' href='/Debit'>Debit</Link>
     <Link className='text-white p-3 text-3xl font-bold text-center' href='/Credit'>Credit</Link>
     <Link className='text-white p-3 text-3xl font-bold text-center' href='/Loan'>Loan</Link>
-    <Link className='text-white p-3 text-3xl font-bold text-center' href='/Conversion_calculator'>Conversion Calculator</Link>
+    <Link className='text-white p-3 text-3xl font-bold text-center' href='/Conversion_calculator'>Conversion-Calculator</Link>
     </div>
-    <LoanPage userData={userData} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
-import page from '../page'
 import History from '../History'
-
+import { useData } from '../../../Helper/DataContext'
+import Navbar from '../Navbar'
 
 const LoanPage = (userData) => {
     let renderTask = <h2 className='text-center'>No Transaction History Availible</h2>
@@ -23,7 +23,10 @@ const LoanPage = (userData) => {
     }
 
     return (
+      <>
+      <Navbar />
         <History renderTask={renderTask}/>
+        </>
     )
 }
 
