@@ -44,18 +44,18 @@ function ConvertedValueBloack({ amount, value, onChange }) {
 
     let Credityet = localStorage.getItem('Total Credit')
     Credityet = JSON.parse(Credityet)
-    Credityet += convertedValue
+    Credityet += amount
     localStorage.setItem('Total Credit', JSON.stringify(Credityet))
 
     let Amountyet = localStorage.getItem('Total Amount')
     Amountyet = JSON.parse(Amountyet)
-    Amountyet += convertedValue
+    Amountyet += amount
     localStorage.setItem('Total Amount', JSON.stringify(Amountyet))
   } 
 
 
   const submitDebit = (convertedValue)=> {
-    const amount = convertedValue
+    const amount = 0 - convertedValue
     const desc = "Paid in foreign currency"
     const mode = "online"
     const CurrentDate = moment().format('MMMM Do YYYY')
@@ -74,12 +74,12 @@ function ConvertedValueBloack({ amount, value, onChange }) {
 
     let Debityet = localStorage.getItem('Total Debit')
     Debityet = JSON.parse(Debityet)
-    Debityet -= convertedValue
+    Debityet += amount
     localStorage.setItem('Total Debit', JSON.stringify(Debityet))
 
     let Amountyet = localStorage.getItem('Total Amount')
     Amountyet = JSON.parse(Amountyet)
-    Amountyet -= convertedValue
+    Amountyet += amount
     localStorage.setItem('Total Amount', JSON.stringify(Amountyet))
   } 
   return (
