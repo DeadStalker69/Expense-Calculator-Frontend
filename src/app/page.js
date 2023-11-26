@@ -89,19 +89,17 @@ const page = () => {
     const CurrentDate = moment().format('MMMM Do YYYY')
 
     const updatedTotal = currentTotal + newAmount
-
+    if(mode === 'loan')
+    {
+      const updateLoan = currentLoan + newAmount
+      setLoan(updateLoan)
+    }
+    else {
     if(newAmount>0)
     {
-      if(mode === 'loan')
-      {
-        const updateLoan = currentLoan + newAmount
-        setLoan(updateLoan)
-      }
-      else {
       const updatedCredit = currentCredit + newAmount
       setcredit(updatedCredit)
       settotal(updatedTotal)
-      }
     }
     if(newAmount<0)
     {
@@ -123,6 +121,7 @@ const page = () => {
       setDebit(updatedDebit)
       settotal(updatedTotal)
     }
+  }
     setMainTask([... mainTask, {amount, desc, mode, CurrentDate}])
     console.log(mainTask)
     setamount("")
@@ -130,24 +129,72 @@ const page = () => {
   }
 
   const loan_handler =(loan, credit, toal, debit)=>{
-    if(loan>toal)
+    if(loan < 0)
     {
-      alert("The loan amount is more than money availible. Cannot process the transaction.")
+      toast.info("No pending loan amount.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+        });
+        return;
+    }
+    if(loan>toal)
+    { toast.error("The loan amount is more than money availible. Cannot process the transaction.", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: "dark",
+      });
+      return;
     }
     else{
+      const CurrentDate = moment().format('MMMM Do YYYY')
+      setMainTask([... mainTask, {amount:loan, desc:"paid all pending loans", mode:'loan', CurrentDate}])
+
+      
       toal = toal - loan
       debit = debit - loan
       settotal(toal)
       setLoan("0")
       setDebit(debit)
-      alert("Loan Repaid!!")
+
+      toast.success("Loan Repaid", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+        });
+        return;
     }
   }
   
   let totalColor = "white"
   if((total < 0))
   {
-    totalColor="rgba(255,0,0,0.7)"
+    totalColor="rgb(252 165 165)"
+  }
+
+  let loanColor = "white"
+  if((loan > 0))
+  {
+    loanColor = "rgb(252 165 165)"
+  }
+  if((loan < 0))
+  {
+     loanColor = "rgb(134 239 172)"
   }
 
   let renderTask = <h2 className='text-center'>No Transaction History Availible</h2>
@@ -199,7 +246,7 @@ const page = () => {
     <Navbar/>
     <Form amount={amount} desc={desc} mode={mode} modes={modes} submitHandler={submitHandler} setamount={setamount} setdesc={setdesc} setMode={setMode} />
     <hr/> <br/>
-    <Table credit={credit} debit={debit} loan={loan} total={total} totalColor={totalColor} />
+    <Table credit={credit} debit={debit} loan={loan} total={total} totalColor={totalColor} loanColor = {loanColor} />
     <div className='flex items-center justify-center'>
     <button className='bg-black text-white px-4 py-3 text-2xl font-bold rounded m-5' onClick={()=>{{loan_handler(loan, credit, total, debit)}}}>Loan Repaid</button>
     </div> <br/>

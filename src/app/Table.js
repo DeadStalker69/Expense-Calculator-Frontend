@@ -1,7 +1,7 @@
 import React from 'react'
 import page from './page'
 
-export const Table = ({ credit, debit, loan, total, totalColor }) => {
+export const Table = ({ credit, debit, loan, total, totalColor, loanColor }) => {
   return (
     <div className='flex items-center justify-center'>
     <table className='border-black border border-collapse border-spacing-2 min-w-[40%]'>
@@ -14,9 +14,9 @@ export const Table = ({ credit, debit, loan, total, totalColor }) => {
     </thead>
     <tbody>
     <tr >
-      <td className='border border-black p-10 bg-gradient-to-r from-green-300 to-white text-center text-4xl '>{credit}</td>
-      <td className='border border-black p-10  bg-gradient-to-r from-red-300 to-white text-center text-4xl'>{debit}</td>
-      <td className='border border-black p-10  bg-gradient-to-r from-red-300 to-white text-center text-4xl' rowSpan={2}>{loan}</td>
+      <td className='border border-black p-10 bg-green-300 text-center text-4xl '>{credit}</td>
+      <td className='border border-black p-10  bg-red-300 to-white text-center text-4xl'>{debit}</td>
+      <td className='border border-black p-10 text-center text-4xl' style={{backgroundColor: loanColor}} rowSpan={2}>{loan}</td>
     </tr>
     <tr>
       <td className='border border-black p-3 text-center font-semibold'>Total</td>
